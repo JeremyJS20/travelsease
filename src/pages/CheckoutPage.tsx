@@ -45,7 +45,6 @@ const CheckoutPage: React.FC = () => {
 
     try {
       const booking = await checkout("Credit Card")
-      clearCart()
       addNotification({
         type: "success",
         title: "Booking Confirmed",

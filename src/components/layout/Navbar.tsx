@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthContext"
 import { useNotification } from "../../contexts/NotificationContext"
 import NotificationDropdown from "../notifications/NotificationDropdown"
+import CartSummary from "../cart/CartSummary"
 
 const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth()
@@ -30,6 +31,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {isAuthenticated ? (
             <>
+              <CartSummary />
               {/* Notifications */}
               <div className="relative">
                 <button
