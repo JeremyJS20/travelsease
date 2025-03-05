@@ -1,52 +1,63 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { useNotification } from "../contexts/NotificationContext"
+import type React from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNotification } from "../contexts/NotificationContext";
 
 const SupportPage: React.FC = () => {
-  const { addNotification } = useNotification()
+  const { t } = useTranslation();
+  const { addNotification } = useNotification();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
-  })
+  });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // TODO: Implement support ticket submission logic
     addNotification({
       type: "success",
-      title: "Support Ticket Submitted",
-      message: "Your support ticket has been successfully submitted. We'll get back to you soon.",
-    })
+      title: t("notifications.supportTicket"),
+      message: t("notifications.supportTicketDesc"),
+    });
     setFormData({
       name: "",
       email: "",
       subject: "",
       message: "",
-    })
-  }
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Customer Support</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+        {t("support.customerSupport")}
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Contact Us</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+            {t("support.contactUs")}
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Name
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t("auth.yourName")}
               </label>
               <input
                 type="text"
@@ -59,8 +70,11 @@ const SupportPage: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t("auth.email")}
               </label>
               <input
                 type="email"
@@ -73,8 +87,11 @@ const SupportPage: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Subject
+              <label
+                htmlFor="subject"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t("support.subject")}
               </label>
               <input
                 type="text"
@@ -87,8 +104,11 @@ const SupportPage: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Message
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t("support.message")}
               </label>
               <textarea
                 id="message"
@@ -104,55 +124,52 @@ const SupportPage: React.FC = () => {
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
             >
-              Submit
+              {t("support.submit")}
             </button>
           </form>
         </div>
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+            {t("support.faq")}
+          </h2>
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">How do I cancel my booking?</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                {t("support.faqCancelBooking")}
+              </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                You can cancel your booking by going to your Itinerary page and clicking the "Cancel Booking" button
-                next to the booking you wish to cancel. Please note that cancellation policies may vary depending on the
-                type of booking and how close to the travel date you are cancelling.
+                {t("support.faqCancelAnswer")}
               </p>
             </div>
             <div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                What payment methods do you accept?
+                {t("support.faqPayment")}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                We accept all major credit cards, including Visa, MasterCard, American Express, and Discover. We also
-                support PayPal for secure online payments.
+                {t("support.faqPaymentAnswer")}
               </p>
             </div>
             <div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                How can I change my reservation?
+                {t("support.faqChangeReservation")}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                To change your reservation, please contact our customer support team with your booking reference number.
-                We'll do our best to accommodate your request, subject to availability and any applicable fees.
+                {t("support.faqChangeAnswer")}
               </p>
             </div>
             <div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                Is travel insurance included in my booking?
+                {t("support.faqInsurance")}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Travel insurance is not automatically included in your booking. However, we strongly recommend
-                purchasing travel insurance to protect your trip. You can add travel insurance during the checkout
-                process or contact our support team for assistance.
+                {t("support.faqInsuranceAnswer")}
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SupportPage
-
+export default SupportPage;

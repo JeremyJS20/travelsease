@@ -32,7 +32,7 @@ const SearchPage: React.FC = () => {
     // Simulate API call
     setIsLoading(true);
     setTimeout(() => {
-      let results: any;
+      let results;
       switch (searchType) {
         case "flight":
           results = mockFlights;
@@ -50,7 +50,7 @@ const SearchPage: React.FC = () => {
       // Filter by destination if provided
       if (destination) {
         results = results.filter(
-          (item: any) =>
+          (item) =>
             item.destination
               .toLowerCase()
               .includes(destination.toLowerCase()) ||

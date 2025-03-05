@@ -1,43 +1,46 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useParams, Link } from "react-router-dom"
-import { useBooking } from "../contexts/BookingContext"
-import { useNotification } from "../contexts/NotificationContext"
-import { mockHotelDetails } from "../data/mockData"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useBooking } from "../contexts/BookingContext";
+import { useNotification } from "../contexts/NotificationContext";
+import { mockHotelDetails } from "../data/mockData";
 
 const HotelDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>()
-  const [hotel, setHotel] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [selectedRoom, setSelectedRoom] = useState<string | null>(null)
-  const [checkInDate, setCheckInDate] = useState("")
-  const [checkOutDate, setCheckOutDate] = useState("")
-  const { addToCart } = useBooking()
-  const { addNotification } = useNotification()
+  const { id } = useParams<{ id: string }>();
+  const [hotel, setHotel] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  const [checkInDate, setCheckInDate] = useState("");
+  const [checkOutDate, setCheckOutDate] = useState("");
+  const { addToCart } = useBooking();
+  const { addNotification } = useNotification();
 
   useEffect(() => {
     // Simulate API call
-    setIsLoading(true)
+    setIsLoading(true);
     setTimeout(() => {
       if (id && mockHotelDetails[id]) {
-        setHotel(mockHotelDetails[id])
+        setHotel(mockHotelDetails[id]);
         if (mockHotelDetails[id].roomTypes.length > 0) {
-          setSelectedRoom(mockHotelDetails[id].roomTypes[0].id)
+          setSelectedRoom(mockHotelDetails[id].roomTypes[0].id);
         }
       }
-      setIsLoading(false)
-    }, 1000)
-  }, [id])
+      setIsLoading(false);
+    }, 1000);
+  }, [id]);
 
   const handleAddToCart = () => {
-    if (!hotel || !selectedRoom || !checkInDate || !checkOutDate) return
+    if (!hotel || !selectedRoom || !checkInDate || !checkOutDate) return;
 
-    const room = hotel.roomTypes.find((r: any) => r.id === selectedRoom)
-    if (!room) return
+    const room = hotel.roomTypes.find((r: any) => r.id === selectedRoom);
+    if (!room) return;
 
-    const nights = Math.ceil((new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) / (1000 * 3600 * 24))
+    const nights = Math.ceil(
+      (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) /
+        (1000 * 3600 * 24)
+    );
 
     addToCart({
       id: `${hotel.id}-${selectedRoom}`,
@@ -54,14 +57,14 @@ const HotelDetailsPage: React.FC = () => {
         nights,
         totalPrice: room.price * nights,
       },
-    })
+    });
 
     addNotification({
       type: "success",
       title: "Hotel Added",
       message: `${room.name} at ${hotel.name} has been added to your cart.`,
-    })
-  }
+    });
+  };
 
   if (isLoading) {
     return (
@@ -86,14 +89,16 @@ const HotelDetailsPage: React.FC = () => {
           <span className="sr-only">Loading...</span>
         </div>
       </div>
-    )
+    );
   }
 
   if (!hotel) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Hotel Not Found</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Hotel Not Found
+          </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
             The hotel you're looking for doesn't exist or has been removed.
           </p>
@@ -105,7 +110,7 @@ const HotelDetailsPage: React.FC = () => {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -122,7 +127,12 @@ const HotelDetailsPage: React.FC = () => {
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
           </svg>
           Back to Search Results
         </Link>
@@ -130,15 +140,23 @@ const HotelDetailsPage: React.FC = () => {
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-8">
         <div className="p-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{hotel.name}</h1>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">{hotel.address}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            {hotel.name}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            {hotel.address}
+          </p>
 
           <div className="flex items-center mb-6">
             <div className="flex items-center mr-4">
               {[...Array(5)].map((_, i) => (
                 <svg
                   key={i}
-                  className={`w-5 h-5 ${i < Math.floor(hotel.rating) ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}`}
+                  className={`w-5 h-5 ${
+                    i < Math.floor(hotel.rating)
+                      ? "text-yellow-400"
+                      : "text-gray-300 dark:text-gray-600"
+                  }`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -147,7 +165,9 @@ const HotelDetailsPage: React.FC = () => {
                 </svg>
               ))}
             </div>
-            <span className="text-lg font-semibold text-gray-900 dark:text-white">{hotel.rating.toFixed(1)}</span>
+            <span className="text-lg font-semibold text-gray-900 dark:text-white">
+              {hotel.rating.toFixed(1)}
+            </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -169,12 +189,18 @@ const HotelDetailsPage: React.FC = () => {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">About this hotel</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">{hotel.description}</p>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              About this hotel
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              {hotel.description}
+            </p>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Amenities</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              Amenities
+            </h2>
             <ul className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {hotel.amenities.map((amenity: string, index: number) => (
                 <li key={index} className="flex items-center">
@@ -185,28 +211,47 @@ const HotelDetailsPage: React.FC = () => {
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
                   </svg>
-                  <span className="text-gray-600 dark:text-gray-300">{amenity}</span>
+                  <span className="text-gray-600 dark:text-gray-300">
+                    {amenity}
+                  </span>
                 </li>
               ))}
             </ul>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Room Types</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              Room Types
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {hotel.roomTypes.map((room: any) => (
                 <div
                   key={room.id}
-                  className={`border rounded-lg p-4 cursor-pointer ${selectedRoom === room.id ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700"}`}
+                  className={`border rounded-lg p-4 cursor-pointer ${
+                    selectedRoom === room.id
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                      : "border-gray-200 dark:border-gray-700"
+                  }`}
                   onClick={() => setSelectedRoom(room.id)}
                 >
                   <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-medium text-gray-900 dark:text-white">{room.name}</h3>
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">${room.price}/night</span>
+                    <h3 className="font-medium text-gray-900 dark:text-white">
+                      {room.name}
+                    </h3>
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">
+                      ${room.price}/night
+                    </span>
                   </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{room.capacity}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                    {room.capacity}
+                  </p>
                   <ul className="text-sm text-gray-600 dark:text-gray-300">
                     {room.amenities.map((amenity: string, index: number) => (
                       <li key={index} className="flex items-center mb-1">
@@ -217,7 +262,12 @@ const HotelDetailsPage: React.FC = () => {
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M5 13l4 4L19 7"
+                          ></path>
                         </svg>
                         {amenity}
                       </li>
@@ -229,33 +279,56 @@ const HotelDetailsPage: React.FC = () => {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Policies</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              Policies
+            </h2>
             <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
               <div className="mb-3">
-                <span className="font-medium text-gray-900 dark:text-white">Check-in:</span>
-                <p className="text-gray-600 dark:text-gray-300">{hotel.policies.checkIn}</p>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  Check-in:
+                </span>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {hotel.policies.checkIn}
+                </p>
               </div>
               <div className="mb-3">
-                <span className="font-medium text-gray-900 dark:text-white">Check-out:</span>
-                <p className="text-gray-600 dark:text-gray-300">{hotel.policies.checkOut}</p>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  Check-out:
+                </span>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {hotel.policies.checkOut}
+                </p>
               </div>
               <div>
-                <span className="font-medium text-gray-900 dark:text-white">Cancellation:</span>
-                <p className="text-gray-600 dark:text-gray-300">{hotel.policies.cancellation}</p>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  Cancellation:
+                </span>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {hotel.policies.cancellation}
+                </p>
               </div>
             </div>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Guest Reviews</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              Guest Reviews
+            </h2>
             {hotel.reviews.map((review: any) => (
-              <div key={review.id} className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+              <div
+                key={review.id}
+                className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0"
+              >
                 <div className="flex items-center mb-2">
                   <div className="flex items-center mr-2">
                     {[...Array(5)].map((_, i) => (
                       <svg
                         key={i}
-                        className={`w-5 h-5 ${i < review.rating ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}`}
+                        className={`w-5 h-5 ${
+                          i < review.rating
+                            ? "text-yellow-400"
+                            : "text-gray-300 dark:text-gray-600"
+                        }`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -264,10 +337,16 @@ const HotelDetailsPage: React.FC = () => {
                       </svg>
                     ))}
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">{review.user}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    {review.user}
+                  </span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300 mb-2">{review.comment}</p>
-                <span className="text-sm text-gray-500 dark:text-gray-400">{review.date}</span>
+                <p className="text-gray-600 dark:text-gray-300 mb-2">
+                  {review.comment}
+                </p>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {review.date}
+                </span>
               </div>
             ))}
           </div>
@@ -276,7 +355,10 @@ const HotelDetailsPage: React.FC = () => {
             <div className="mb-4 md:mb-0 w-full md:w-auto">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="check-in" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label
+                    htmlFor="check-in"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
                     Check-in Date
                   </label>
                   <input
@@ -308,9 +390,16 @@ const HotelDetailsPage: React.FC = () => {
             </div>
             <div className="flex flex-col items-end">
               <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                ${selectedRoom ? hotel.roomTypes.find((r: any) => r.id === selectedRoom)?.price : 0}/night
+                $
+                {selectedRoom
+                  ? hotel.roomTypes.find((r: any) => r.id === selectedRoom)
+                      ?.price
+                  : 0}
+                /night
               </span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">Plus taxes and fees</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Plus taxes and fees
+              </span>
             </div>
           </div>
 
@@ -326,8 +415,7 @@ const HotelDetailsPage: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HotelDetailsPage
-
+export default HotelDetailsPage;

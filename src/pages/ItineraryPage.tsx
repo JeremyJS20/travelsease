@@ -1,38 +1,40 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useBooking } from "../contexts/BookingContext"
-import { useNotification } from "../contexts/NotificationContext"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useBooking } from "../contexts/BookingContext";
+import { useNotification } from "../contexts/NotificationContext";
 
 const ItineraryPage: React.FC = () => {
-  const { bookings, cancelBooking } = useBooking()
-  const { addNotification } = useNotification()
-  const [isLoading, setIsLoading] = useState(true)
+  const { t } = useTranslation();
+  const { bookings, cancelBooking } = useBooking();
+  const { addNotification } = useNotification();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Simulate API call to fetch bookings
     setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
-  }, [])
+      setIsLoading(false);
+    }, 1000);
+  }, []);
 
   const handleCancelBooking = async (bookingId: string) => {
     try {
-      await cancelBooking(bookingId)
+      await cancelBooking(bookingId);
       addNotification({
         type: "success",
-        title: "Booking Cancelled",
-        message: "Your booking has been successfully cancelled.",
-      })
+        title: t("notifications.bookingCancelled"),
+        message: t("notifications.bookingCancelledDesc"),
+      });
     } catch (error) {
       addNotification({
         type: "error",
-        title: "Cancellation Failed",
-        message: "There was an error cancelling your booking. Please try again.",
-      })
+        title: t("notifications.cancellationFailed"),
+        message: t("notifications.cancellationFailedDesc"),
+      });
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -54,29 +56,41 @@ const ItineraryPage: React.FC = () => {
               fill="currentFill"
             />
           </svg>
-          <span className="sr-only">Loading...</span>
+          <span className="sr-only">{t("common.loading")}</span>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">My Itinerary</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+        {t("itinerary.myItinerary")}
+      </h1>
       {bookings.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">No bookings found</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">You haven't made any bookings yet.</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            {t("itinerary.noBookings")}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
+            {t("itinerary.noBookingsDesc")}
+          </p>
         </div>
       ) : (
         <div className="space-y-8">
           {bookings.map((booking) => (
-            <div key={booking.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <div
+              key={booking.id}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6"
+            >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Booking #{booking.id}</h2>
+                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+                    {t("itinerary.booking")} #{booking.id}
+                  </h2>
                   <p className="text-gray-600 dark:text-gray-400">
-                    Date: {new Date(booking.bookingDate).toLocaleDateString()}
+                    {t("itinerary.date")}{" "}
+                    {new Date(booking.bookingDate).toLocaleDateString()}
                   </p>
                 </div>
                 <span
@@ -84,20 +98,25 @@ const ItineraryPage: React.FC = () => {
                     booking.status === "confirmed"
                       ? "bg-green-100 text-green-800"
                       : booking.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : booking.status === "cancelled"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-blue-100 text-blue-800"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : booking.status === "cancelled"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-blue-100 text-blue-800"
                   }`}
                 >
-                  {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                  {t(`itinerary.status.${booking.status}`)}
                 </span>
               </div>
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Booked Items:</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  {t("itinerary.bookedItems")}
+                </h3>
                 <ul className="list-disc list-inside space-y-2">
                   {booking.items.map((item, index) => (
-                    <li key={index} className="text-gray-600 dark:text-gray-400">
+                    <li
+                      key={index}
+                      className="text-gray-600 dark:text-gray-400"
+                    >
                       {item.title} - ${item.price.toFixed(2)}
                     </li>
                   ))}
@@ -105,14 +124,14 @@ const ItineraryPage: React.FC = () => {
               </div>
               <div className="mt-4 flex justify-between items-center">
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Total: ${booking.totalPrice.toFixed(2)}
+                  {t("cart.total")}: ${booking.totalPrice.toFixed(2)}
                 </p>
                 {booking.status !== "cancelled" && (
                   <button
                     onClick={() => handleCancelBooking(booking.id)}
                     className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
                   >
-                    Cancel Booking
+                    {t("itinerary.cancelBooking")}
                   </button>
                 )}
               </div>
@@ -121,8 +140,7 @@ const ItineraryPage: React.FC = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ItineraryPage
-
+export default ItineraryPage;

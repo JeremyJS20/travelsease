@@ -1,20 +1,22 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useAuth } from "../contexts/AuthContext"
-import { useNotification } from "../contexts/NotificationContext"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
+import { useNotification } from "../contexts/NotificationContext";
 
 const ProfilePage: React.FC = () => {
-  const { user, isLoading } = useAuth()
-  const { addNotification } = useNotification()
-  const [isEditing, setIsEditing] = useState(false)
+  const { t } = useTranslation();
+  const { user, isLoading } = useAuth();
+  const { addNotification } = useNotification();
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     address: "",
-  })
+  });
 
   useEffect(() => {
     if (user) {
@@ -23,28 +25,28 @@ const ProfilePage: React.FC = () => {
         email: user.email,
         phone: user.phone || "",
         address: user.address || "",
-      })
+      });
     }
-  }, [user])
+  }, [user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // TODO: Implement profile update logic
     addNotification({
       type: "success",
-      title: "Profile Updated",
-      message: "Your profile has been successfully updated.",
-    })
-    setIsEditing(false)
-  }
+      title: t("notifications.profileUpdated"),
+      message: t("notifications.profileUpdatedDesc"),
+    });
+    setIsEditing(false);
+  };
 
   if (isLoading) {
     return (
@@ -66,36 +68,49 @@ const ProfilePage: React.FC = () => {
               fill="currentFill"
             />
           </svg>
-          <span className="sr-only">Loading...</span>
+          <span className="sr-only">{t("common.loading")}</span>
         </div>
       </div>
-    )
+    );
   }
 
   if (!user) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">User Not Found</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">Please log in to view your profile.</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            {t("common.notFound")}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
+            {t("profile.pleaseLogin")}
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">My Profile</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+        {t("profile.myProfile")}
+      </h1>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
             <img
-              src={user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`}
+              src={
+                user.avatar ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                  user.name
+                )}&background=random`
+              }
               alt={user.name}
               className="w-20 h-20 rounded-full mr-4"
             />
             <div>
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">{user.name}</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                {user.name}
+              </h2>
               <p className="text-gray-600 dark:text-gray-400">{user.email}</p>
             </div>
           </div>
@@ -103,14 +118,17 @@ const ProfilePage: React.FC = () => {
             onClick={() => setIsEditing(!isEditing)}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
           >
-            {isEditing ? "Cancel" : "Edit Profile"}
+            {isEditing ? t("profile.cancel") : t("profile.editProfile")}
           </button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Name
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t("auth.yourName")}
               </label>
               <input
                 type="text"
@@ -123,8 +141,11 @@ const ProfilePage: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t("auth.email")}
               </label>
               <input
                 type="email"
@@ -137,8 +158,11 @@ const ProfilePage: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Phone
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t("checkout.phone")}
               </label>
               <input
                 type="tel"
@@ -151,8 +175,11 @@ const ProfilePage: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Address
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                {t("checkout.address")}
               </label>
               <input
                 type="text"
@@ -171,15 +198,14 @@ const ProfilePage: React.FC = () => {
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
               >
-                Save Changes
+                {t("profile.saveChanges")}
               </button>
             </div>
           )}
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfilePage
-
+export default ProfilePage;

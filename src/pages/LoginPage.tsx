@@ -1,37 +1,39 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../contexts/AuthContext"
+import type React from "react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const { login } = useAuth()
-  const navigate = useNavigate()
+  const { t } = useTranslation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setIsLoading(true)
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
     try {
-      const success = await login(email, password)
+      const success = await login(email, password);
       if (success) {
-        navigate("/")
+        navigate("/");
       } else {
-        setError("Invalid email or password")
+        setError(t("auth.invalidCredentials"));
       }
     } catch (err) {
-      setError("An error occurred during login")
-      console.error(err)
+      setError(t("auth.loginError"));
+      console.error(err);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -39,7 +41,7 @@ const LoginPage: React.FC = () => {
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Sign in to your account
+              {t("auth.signIn")}
             </h1>
             {error && (
               <div
@@ -51,8 +53,11 @@ const LoginPage: React.FC = () => {
             )}
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Your email
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  {t("auth.email")}
                 </label>
                 <input
                   type="email"
@@ -66,8 +71,11 @@ const LoginPage: React.FC = () => {
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Password
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  {t("auth.password")}
                 </label>
                 <input
                   type="password"
@@ -91,13 +99,19 @@ const LoginPage: React.FC = () => {
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="remember" className="text-gray-500 dark:text-gray-300">
-                      Remember me
+                    <label
+                      htmlFor="remember"
+                      className="text-gray-500 dark:text-gray-300"
+                    >
+                      {t("auth.rememberMe")}
                     </label>
                   </div>
                 </div>
-                <a href="#" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
-                  Forgot password?
+                <a
+                  href="#"
+                  className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
+                >
+                  {t("auth.forgotPassword")}
                 </a>
               </div>
               <button
@@ -123,16 +137,19 @@ const LoginPage: React.FC = () => {
                         fill="currentFill"
                       />
                     </svg>
-                    <span>Signing in...</span>
+                    <span>{t("auth.signingIn")}</span>
                   </div>
                 ) : (
-                  "Sign in"
+                  t("navbar.login")
                 )}
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don't have an account yet?{" "}
-                <Link to="/register" className="font-medium text-blue-600 hover:underline dark:text-blue-500">
-                  Sign up
+                {t("auth.dontHaveAccount")}{" "}
+                <Link
+                  to="/register"
+                  className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                >
+                  {t("auth.signUp")}
                 </Link>
               </p>
             </form>
@@ -140,8 +157,7 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default LoginPage
-
+export default LoginPage;

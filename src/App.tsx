@@ -19,6 +19,8 @@ import LoyaltyPage from "./pages/LoyaltyPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
+import "../i18n"; // Import the i18n configuration
+
 function App() {
   return (
     <Router>
