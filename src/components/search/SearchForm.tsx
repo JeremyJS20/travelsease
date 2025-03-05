@@ -1,20 +1,21 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import type React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-type SearchType = "flight" | "hotel" | "activity"
+type SearchType = "flight" | "hotel" | "activity";
 
 interface SearchFormProps {
-  initialType?: SearchType
-  initialDestination?: string
+  initialType?: SearchType;
+  initialDestination?: string;
   initialDates?: {
-    departure?: string
-    return?: string
-    checkIn?: string
-    checkOut?: string
-  }
+    departure?: string;
+    return?: string;
+    checkIn?: string;
+    checkOut?: string;
+  };
 }
 
 const SearchForm: React.FC<SearchFormProps> = ({
@@ -22,45 +23,48 @@ const SearchForm: React.FC<SearchFormProps> = ({
   initialDestination = "",
   initialDates = {},
 }) => {
-  const navigate = useNavigate()
-  const [searchType, setSearchType] = useState<SearchType>(initialType)
-  const [destination, setDestination] = useState(initialDestination)
-  const [origin, setOrigin] = useState("")
-  const [departureDate, setDepartureDate] = useState(initialDates.departure || "")
-  const [returnDate, setReturnDate] = useState(initialDates.return || "")
-  const [checkInDate, setCheckInDate] = useState(initialDates.checkIn || "")
-  const [checkOutDate, setCheckOutDate] = useState(initialDates.checkOut || "")
-  const [guests, setGuests] = useState(1)
-  const [rooms, setRooms] = useState(1)
-  const [activityDate, setActivityDate] = useState("")
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [searchType, setSearchType] = useState<SearchType>(initialType);
+  const [destination, setDestination] = useState(initialDestination);
+  const [origin, setOrigin] = useState("");
+  const [departureDate, setDepartureDate] = useState(
+    initialDates.departure || ""
+  );
+  const [returnDate, setReturnDate] = useState(initialDates.return || "");
+  const [checkInDate, setCheckInDate] = useState(initialDates.checkIn || "");
+  const [checkOutDate, setCheckOutDate] = useState(initialDates.checkOut || "");
+  const [guests, setGuests] = useState(1);
+  const [rooms, setRooms] = useState(1);
+  const [activityDate, setActivityDate] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const params = new URLSearchParams()
-    params.append("type", searchType)
+    const params = new URLSearchParams();
+    params.append("type", searchType);
 
     if (destination) {
-      params.append("destination", destination)
+      params.append("destination", destination);
     }
 
     if (searchType === "flight") {
-      if (origin) params.append("origin", origin)
-      if (departureDate) params.append("departureDate", departureDate)
-      if (returnDate) params.append("returnDate", returnDate)
-      params.append("passengers", guests.toString())
+      if (origin) params.append("origin", origin);
+      if (departureDate) params.append("departureDate", departureDate);
+      if (returnDate) params.append("returnDate", returnDate);
+      params.append("passengers", guests.toString());
     } else if (searchType === "hotel") {
-      if (checkInDate) params.append("checkIn", checkInDate)
-      if (checkOutDate) params.append("checkOut", checkOutDate)
-      params.append("guests", guests.toString())
-      params.append("rooms", rooms.toString())
+      if (checkInDate) params.append("checkIn", checkInDate);
+      if (checkOutDate) params.append("checkOut", checkOutDate);
+      params.append("guests", guests.toString());
+      params.append("rooms", rooms.toString());
     } else if (searchType === "activity") {
-      if (activityDate) params.append("date", activityDate)
-      params.append("participants", guests.toString())
+      if (activityDate) params.append("date", activityDate);
+      params.append("participants", guests.toString());
     }
 
-    navigate(`/search?${params.toString()}`)
-  }
+    navigate(`/search?${params.toString()}`);
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -76,8 +80,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
               onChange={() => setSearchType("flight")}
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
-            <label htmlFor="flight-radio" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-              Flights
+            <label
+              htmlFor="flight-radio"
+              className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >
+              {t("searchForm.flights")}
             </label>
           </div>
           <div className="flex items-center me-4">
@@ -90,8 +97,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
               onChange={() => setSearchType("hotel")}
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
-            <label htmlFor="hotel-radio" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-              Hotels
+            <label
+              htmlFor="hotel-radio"
+              className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >
+              {t("searchForm.hotels")}
             </label>
           </div>
           <div className="flex items-center me-4">
@@ -104,8 +114,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
               onChange={() => setSearchType("activity")}
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
-            <label htmlFor="activity-radio" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-              Activities
+            <label
+              htmlFor="activity-radio"
+              className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >
+              {t("searchForm.activities")}
             </label>
           </div>
         </div>
@@ -115,8 +128,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
         {searchType === "flight" && (
           <>
             <div>
-              <label htmlFor="origin" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                From
+              <label
+                htmlFor="origin"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                {t("searchForm.from")}
               </label>
               <input
                 type="text"
@@ -124,13 +140,16 @@ const SearchForm: React.FC<SearchFormProps> = ({
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="City or Airport"
+                placeholder={t("searchForm.cityOrAirport")}
                 required
               />
             </div>
             <div>
-              <label htmlFor="destination" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                To
+              <label
+                htmlFor="destination"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                {t("searchForm.to")}
               </label>
               <input
                 type="text"
@@ -138,13 +157,16 @@ const SearchForm: React.FC<SearchFormProps> = ({
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="City or Airport"
+                placeholder={t("searchForm.cityOrAirport")}
                 required
               />
             </div>
             <div>
-              <label htmlFor="departure-date" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Departure Date
+              <label
+                htmlFor="departure-date"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                {t("searchForm.departureDate")}
               </label>
               <input
                 type="date"
@@ -156,8 +178,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
               />
             </div>
             <div>
-              <label htmlFor="return-date" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Return Date
+              <label
+                htmlFor="return-date"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                {t("searchForm.returnDate")}
               </label>
               <input
                 type="date"
@@ -177,7 +202,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
                 htmlFor="hotel-destination"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                Destination
+                {t("searchForm.destination")}
               </label>
               <input
                 type="text"
@@ -185,13 +210,16 @@ const SearchForm: React.FC<SearchFormProps> = ({
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="City or Hotel Name"
+                placeholder={t("searchForm.cityOrHotelName")}
                 required
               />
             </div>
             <div>
-              <label htmlFor="check-in-date" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Check-in Date
+              <label
+                htmlFor="check-in-date"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                {t("searchForm.checkIn")}
               </label>
               <input
                 type="date"
@@ -203,8 +231,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
               />
             </div>
             <div>
-              <label htmlFor="check-out-date" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Check-out Date
+              <label
+                htmlFor="check-out-date"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                {t("searchForm.checkOut")}
               </label>
               <input
                 type="date"
@@ -217,8 +248,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="guests" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Guests
+                <label
+                  htmlFor="guests"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  {t("searchForm.guests")}
                 </label>
                 <input
                   type="number"
@@ -231,8 +265,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
                 />
               </div>
               <div>
-                <label htmlFor="rooms" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Rooms
+                <label
+                  htmlFor="rooms"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  {t("searchForm.rooms")}
                 </label>
                 <input
                   type="number"
@@ -255,7 +292,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
                 htmlFor="activity-destination"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                Destination
+                {t("searchForm.destination")}
               </label>
               <input
                 type="text"
@@ -263,13 +300,16 @@ const SearchForm: React.FC<SearchFormProps> = ({
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="City or Activity Type"
+                placeholder={t("searchForm.cityOrActivityType")}
                 required
               />
             </div>
             <div>
-              <label htmlFor="activity-date" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Date
+              <label
+                htmlFor="activity-date"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                {t("searchForm.date")}
               </label>
               <input
                 type="date"
@@ -281,8 +321,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
               />
             </div>
             <div>
-              <label htmlFor="participants" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Participants
+              <label
+                htmlFor="participants"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                {t("searchForm.participants")}
               </label>
               <input
                 type="number"
@@ -302,11 +345,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
         type="submit"
         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
       >
-        Search
+        {t("searchForm.search")}
       </button>
     </form>
-  )
-}
+  );
+};
 
-export default SearchForm
-
+export default SearchForm;

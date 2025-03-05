@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useParams, Link } from "react-router-dom"
-import { useBooking } from "../contexts/BookingContext"
-import { useNotification } from "../contexts/NotificationContext"
-import { mockActivityDetails } from "../data/mockData"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useBooking } from "../contexts/BookingContext";
+import { useNotification } from "../contexts/NotificationContext";
+import { mockActivityDetails } from "../data/mockData";
 
 const ActivityDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>()
-  const [activity, setActivity] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [selectedDate, setSelectedDate] = useState("")
-  const [participants, setParticipants] = useState(1)
-  const { addToCart } = useBooking()
-  const { addNotification } = useNotification()
+  const { id } = useParams<{ id: string }>();
+  const [activity, setActivity] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [participants, setParticipants] = useState(1);
+  const { addToCart } = useBooking();
+  const { addNotification } = useNotification();
 
   useEffect(() => {
     // Simulate API call
-    setIsLoading(true)
+    setIsLoading(true);
     setTimeout(() => {
       if (id && mockActivityDetails[id]) {
-        setActivity(mockActivityDetails[id])
+        setActivity(mockActivityDetails[id]);
       }
-      setIsLoading(false)
-    }, 1000)
-  }, [id])
+      setIsLoading(false);
+    }, 1000);
+  }, [id]);
 
   const handleAddToCart = () => {
-    if (!activity || !selectedDate) return
+    if (!activity || !selectedDate) return;
 
     addToCart({
       id: `${activity.id}-${selectedDate}`,
@@ -43,14 +43,14 @@ const ActivityDetailsPage: React.FC = () => {
         participants,
         totalPrice: activity.price * participants,
       },
-    })
+    });
 
     addNotification({
       type: "success",
       title: "Activity Added",
       message: `${activity.name} in ${activity.location} has been added to your cart.`,
-    })
-  }
+    });
+  };
 
   if (isLoading) {
     return (
@@ -75,14 +75,16 @@ const ActivityDetailsPage: React.FC = () => {
           <span className="sr-only">Loading...</span>
         </div>
       </div>
-    )
+    );
   }
 
   if (!activity) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Activity Not Found</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Activity Not Found
+          </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
             The activity you're looking for doesn't exist or has been removed.
           </p>
@@ -94,7 +96,7 @@ const ActivityDetailsPage: React.FC = () => {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -111,7 +113,12 @@ const ActivityDetailsPage: React.FC = () => {
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
           </svg>
           Back to Search Results
         </Link>
@@ -119,15 +126,23 @@ const ActivityDetailsPage: React.FC = () => {
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-8">
         <div className="p-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{activity.name}</h1>
-          <p className="text-gray-600 dark:text-gray-300 mb-4">{activity.location}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            {activity.name}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            {activity.location}
+          </p>
 
           <div className="flex items-center mb-6">
             <div className="flex items-center mr-4">
               {[...Array(5)].map((_, i) => (
                 <svg
                   key={i}
-                  className={`w-5 h-5 ${i < Math.floor(activity.rating) ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}`}
+                  className={`w-5 h-5 ${
+                    i < Math.floor(activity.rating)
+                      ? "text-yellow-400"
+                      : "text-gray-300 dark:text-gray-600"
+                  }`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +151,9 @@ const ActivityDetailsPage: React.FC = () => {
                 </svg>
               ))}
             </div>
-            <span className="text-lg font-semibold text-gray-900 dark:text-white">{activity.rating.toFixed(1)}</span>
+            <span className="text-lg font-semibold text-gray-900 dark:text-white">
+              {activity.rating.toFixed(1)}
+            </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -158,12 +175,18 @@ const ActivityDetailsPage: React.FC = () => {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">About this activity</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">{activity.description}</p>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              About this activity
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              {activity.description}
+            </p>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">What's included</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              What's included
+            </h2>
             <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
               {activity.included.map((item: string, index: number) => (
                 <li key={index}>{item}</li>
@@ -172,7 +195,9 @@ const ActivityDetailsPage: React.FC = () => {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">What's not included</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              What's not included
+            </h2>
             <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
               {activity.notIncluded.map((item: string, index: number) => (
                 <li key={index}>{item}</li>
@@ -181,54 +206,89 @@ const ActivityDetailsPage: React.FC = () => {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Meeting point</h2>
-            <p className="text-gray-600 dark:text-gray-300">{activity.meetingPoint}</p>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              Meeting point
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              {activity.meetingPoint}
+            </p>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Schedule</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              Schedule
+            </h2>
             <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
               <p className="text-gray-600 dark:text-gray-300 mb-2">
-                <span className="font-medium">Days:</span> {activity.schedule.days.join(", ")}
+                <span className="font-medium">Days:</span>{" "}
+                {activity.schedule.days.join(", ")}
               </p>
               <p className="text-gray-600 dark:text-gray-300">
-                <span className="font-medium">Times:</span> {activity.schedule.times.join(", ")}
+                <span className="font-medium">Times:</span>{" "}
+                {activity.schedule.times.join(", ")}
               </p>
             </div>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Policies</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              Policies
+            </h2>
             <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
               <div className="mb-3">
-                <span className="font-medium text-gray-900 dark:text-white">Cancellation:</span>
-                <p className="text-gray-600 dark:text-gray-300">{activity.policies.cancellation}</p>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  Cancellation:
+                </span>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {activity.policies.cancellation}
+                </p>
               </div>
               <div className="mb-3">
-                <span className="font-medium text-gray-900 dark:text-white">Confirmation:</span>
-                <p className="text-gray-600 dark:text-gray-300">{activity.policies.confirmation}</p>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  Confirmation:
+                </span>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {activity.policies.confirmation}
+                </p>
               </div>
               <div className="mb-3">
-                <span className="font-medium text-gray-900 dark:text-white">Accessibility:</span>
-                <p className="text-gray-600 dark:text-gray-300">{activity.policies.accessibility}</p>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  Accessibility:
+                </span>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {activity.policies.accessibility}
+                </p>
               </div>
               <div>
-                <span className="font-medium text-gray-900 dark:text-white">Minimum Age:</span>
-                <p className="text-gray-600 dark:text-gray-300">{activity.policies.minAge}</p>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  Minimum Age:
+                </span>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {activity.policies.minAge}
+                </p>
               </div>
             </div>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Guest Reviews</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+              Guest Reviews
+            </h2>
             {activity.reviews.map((review: any) => (
-              <div key={review.id} className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+              <div
+                key={review.id}
+                className="mb-4 pb-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0"
+              >
                 <div className="flex items-center mb-2">
                   <div className="flex items-center mr-2">
                     {[...Array(5)].map((_, i) => (
                       <svg
                         key={i}
-                        className={`w-5 h-5 ${i < review.rating ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"}`}
+                        className={`w-5 h-5 ${
+                          i < review.rating
+                            ? "text-yellow-400"
+                            : "text-gray-300 dark:text-gray-600"
+                        }`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg"
@@ -237,10 +297,16 @@ const ActivityDetailsPage: React.FC = () => {
                       </svg>
                     ))}
                   </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">{review.user}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    {review.user}
+                  </span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-300 mb-2">{review.comment}</p>
-                <span className="text-sm text-gray-500 dark:text-gray-400">{review.date}</span>
+                <p className="text-gray-600 dark:text-gray-300 mb-2">
+                  {review.comment}
+                </p>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {review.date}
+                </span>
               </div>
             ))}
           </div>
@@ -291,7 +357,8 @@ const ActivityDetailsPage: React.FC = () => {
                 ${(activity.price * participants).toFixed(2)}
               </span>
               <span className="text-sm text-gray-500 dark:text-gray-400">
-                Total for {participants} participant{participants > 1 ? "s" : ""}
+                Total for {participants} participant
+                {participants > 1 ? "s" : ""}
               </span>
             </div>
           </div>
@@ -308,8 +375,7 @@ const ActivityDetailsPage: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ActivityDetailsPage
-
+export default ActivityDetailsPage;

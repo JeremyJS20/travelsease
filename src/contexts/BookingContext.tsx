@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { createContext, useState, useContext, useEffect } from "react"
+import { generateId } from "ai"
 
 export type BookingType = "flight" | "hotel" | "activity"
 
@@ -42,6 +43,8 @@ interface BookingContextType {
   clearCart: () => void
   checkout: (paymentMethod: string) => Promise<Booking>
   cancelBooking: (bookingId: string) => Promise<boolean>
+  cartTotal: number
+  cartItemsCount: number
 }
 
 const BookingContext = createContext<BookingContextType | undefined>(undefined)
@@ -82,7 +85,7 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [bookings])
 
   const addToCart = (item: BookingItem) => {
-    const cartId = `cart-${Date.now()}`
+    const cartId = `cart-${generateId()}`
     setCart([...cart, { ...item, cartId }])
   }
 
@@ -111,7 +114,7 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
     const newBooking: Booking = {
-      id: `booking-${Date.now()}`,
+      id: `booking-${generateId()}`,
       userId: user.id,
       items: [...cart],
       totalPrice,
@@ -119,7 +122,7 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       status: "confirmed",
       paymentInfo: {
         method: paymentMethod,
-        transactionId: `txn-${Date.now()}`,
+        transactionId: `txn-${generateId()}`,
         paid: true,
       },
     }
@@ -139,6 +142,9 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return true
   }
 
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+
   return (
     <BookingContext.Provider
       value={{
@@ -150,6 +156,8 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         clearCart,
         checkout,
         cancelBooking,
+        cartTotal,
+        cartItemsCount,
       }}
     >
       {children}

@@ -1,50 +1,54 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useParams, Link } from "react-router-dom"
-import { useBooking } from "../contexts/BookingContext"
-import { useNotification } from "../contexts/NotificationContext"
-import { mockFlightDetails } from "../data/mockData"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useBooking } from "../contexts/BookingContext";
+import { useNotification } from "../contexts/NotificationContext";
+import { mockFlightDetails } from "../data/mockData";
 
 const FlightDetailsPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>()
-  const [flight, setFlight] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [selectedClass, setSelectedClass] = useState("mainCabin")
-  const [passengers, setPassengers] = useState(1)
-  const { addToCart } = useBooking()
-  const { addNotification } = useNotification()
+  const { id } = useParams<{ id: string }>();
+  const [flight, setFlight] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedClass, setSelectedClass] = useState("mainCabin");
+  const [passengers, setPassengers] = useState(1);
+  const { addToCart } = useBooking();
+  const { addNotification } = useNotification();
 
   useEffect(() => {
     // Simulate API call
-    setIsLoading(true)
+    setIsLoading(true);
     setTimeout(() => {
       if (id && mockFlightDetails[id]) {
-        setFlight(mockFlightDetails[id])
+        setFlight(mockFlightDetails[id]);
       }
-      setIsLoading(false)
-    }, 1000)
-  }, [id])
+      setIsLoading(false);
+    }, 1000);
+  }, [id]);
 
   const formatDuration = (minutes: number) => {
-    const hours = Math.floor(minutes / 60)
-    const mins = minutes % 60
-    return `${hours}h ${mins}m`
-  }
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours}h ${mins}m`;
+  };
 
   const formatDateTime = (dateTimeString: string) => {
-    const date = new Date(dateTimeString)
+    const date = new Date(dateTimeString);
     return {
       time: date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      date: date.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }),
-    }
-  }
+      date: date.toLocaleDateString([], {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      }),
+    };
+  };
 
   const handleAddToCart = () => {
-    if (!flight) return
+    if (!flight) return;
 
-    const classPrice = flight.seatMap[selectedClass].price
+    const classPrice = flight.seatMap[selectedClass].price;
 
     addToCart({
       id: flight.id,
@@ -58,14 +62,14 @@ const FlightDetailsPage: React.FC = () => {
         selectedClass,
         totalPrice: classPrice * passengers,
       },
-    })
+    });
 
     addNotification({
       type: "success",
       title: "Flight Added",
       message: `${flight.airline} flight from ${flight.origin.city} to ${flight.destination.city} has been added to your cart.`,
-    })
-  }
+    });
+  };
 
   if (isLoading) {
     return (
@@ -90,14 +94,16 @@ const FlightDetailsPage: React.FC = () => {
           <span className="sr-only">Loading...</span>
         </div>
       </div>
-    )
+    );
   }
 
   if (!flight) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Flight Not Found</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Flight Not Found
+          </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
             The flight you're looking for doesn't exist or has been removed.
           </p>
@@ -109,11 +115,11 @@ const FlightDetailsPage: React.FC = () => {
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
-  const departure = formatDateTime(flight.departureTime)
-  const arrival = formatDateTime(flight.arrivalTime)
+  const departure = formatDateTime(flight.departureTime);
+  const arrival = formatDateTime(flight.arrivalTime);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -129,7 +135,12 @@ const FlightDetailsPage: React.FC = () => {
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            ></path>
           </svg>
           Back to Search Results
         </Link>
@@ -145,32 +156,48 @@ const FlightDetailsPage: React.FC = () => {
                 className="w-16 h-16 mr-4 object-contain"
               />
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{flight.airline}</h1>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {flight.airline}
+                </h1>
                 <p className="text-gray-600 dark:text-gray-300">
                   Flight {flight.flightNumber} • {flight.aircraft}
                 </p>
               </div>
             </div>
             <div className="flex flex-col items-end">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Starting from</span>
-              <span className="text-3xl font-bold text-gray-900 dark:text-white">${flight.price}</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Starting from
+              </span>
+              <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                ${flight.price}
+              </span>
             </div>
           </div>
 
           <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 mb-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">{departure.time}</span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">{departure.date}</span>
-                <span className="text-lg font-medium text-gray-900 dark:text-white mt-2">{flight.origin.code}</span>
-                <span className="text-sm text-gray-600 dark:text-gray-300">{flight.origin.city}</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {departure.time}
+                </span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {departure.date}
+                </span>
+                <span className="text-lg font-medium text-gray-900 dark:text-white mt-2">
+                  {flight.origin.code}
+                </span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  {flight.origin.city}
+                </span>
                 <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {flight.origin.terminal}, Gate {flight.origin.gate}
                 </span>
               </div>
 
               <div className="flex flex-col items-center mb-6 md:mb-0">
-                <span className="text-sm text-gray-500 dark:text-gray-400 mb-2">{formatDuration(flight.duration)}</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                  {formatDuration(flight.duration)}
+                </span>
                 <div className="relative w-32 md:w-64 h-0.5 bg-gray-300 dark:bg-gray-600 my-2">
                   <div className="absolute top-1/2 left-0 w-2 h-2 -mt-1 rounded-full bg-blue-600"></div>
                   {flight.stops > 0 && (
@@ -179,17 +206,25 @@ const FlightDetailsPage: React.FC = () => {
                   <div className="absolute top-1/2 right-0 w-2 h-2 -mt-1 rounded-full bg-blue-600"></div>
                 </div>
                 <span className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  {flight.stops === 0 ? "Nonstop" : `${flight.stops} stop${flight.stops > 1 ? "s" : ""}`}
+                  {flight.stops === 0
+                    ? "Nonstop"
+                    : `${flight.stops} stop${flight.stops > 1 ? "s" : ""}`}
                 </span>
               </div>
 
               <div className="flex flex-col items-center md:items-end">
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">{arrival.time}</span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">{arrival.date}</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {arrival.time}
+                </span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {arrival.date}
+                </span>
                 <span className="text-lg font-medium text-gray-900 dark:text-white mt-2">
                   {flight.destination.code}
                 </span>
-                <span className="text-sm text-gray-600 dark:text-gray-300">{flight.destination.city}</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">
+                  {flight.destination.city}
+                </span>
                 <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {flight.destination.terminal}, Gate {flight.destination.gate}
                 </span>
@@ -199,7 +234,9 @@ const FlightDetailsPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Baggage Information</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                Baggage Information
+              </h2>
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                 <div className="flex items-start mb-3">
                   <svg
@@ -217,8 +254,12 @@ const FlightDetailsPage: React.FC = () => {
                     ></path>
                   </svg>
                   <div>
-                    <span className="font-medium text-gray-900 dark:text-white">Carry-on:</span>
-                    <p className="text-gray-600 dark:text-gray-300">{flight.baggage.carryOn}</p>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      Carry-on:
+                    </span>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {flight.baggage.carryOn}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -237,15 +278,21 @@ const FlightDetailsPage: React.FC = () => {
                     ></path>
                   </svg>
                   <div>
-                    <span className="font-medium text-gray-900 dark:text-white">Checked baggage:</span>
-                    <p className="text-gray-600 dark:text-gray-300">{flight.baggage.checked}</p>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      Checked baggage:
+                    </span>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      {flight.baggage.checked}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Amenities</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                Amenities
+              </h2>
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                 <ul className="grid grid-cols-2 gap-2">
                   {flight.amenities.map((amenity: string, index: number) => (
@@ -257,9 +304,16 @@ const FlightDetailsPage: React.FC = () => {
                         viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        ></path>
                       </svg>
-                      <span className="text-gray-600 dark:text-gray-300">{amenity}</span>
+                      <span className="text-gray-600 dark:text-gray-300">
+                        {amenity}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -268,51 +322,77 @@ const FlightDetailsPage: React.FC = () => {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Fare Options</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Fare Options
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div
-                className={`border rounded-lg p-4 cursor-pointer ${selectedClass === "mainCabin" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700"}`}
+                className={`border rounded-lg p-4 cursor-pointer ${
+                  selectedClass === "mainCabin"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    : "border-gray-200 dark:border-gray-700"
+                }`}
                 onClick={() => setSelectedClass("mainCabin")}
               >
                 <div className="flex justify-between items-center mb-2">
-                  <h3 className="font-medium text-gray-900 dark:text-white">Economy</h3>
+                  <h3 className="font-medium text-gray-900 dark:text-white">
+                    Economy
+                  </h3>
                   <span className="text-lg font-bold text-gray-900 dark:text-white">
                     ${flight.seatMap.mainCabin.price}
                   </span>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Standard seating with basic amenities</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                  Standard seating with basic amenities
+                </p>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   {flight.seatMap.mainCabin.available} seats available
                 </span>
               </div>
 
               <div
-                className={`border rounded-lg p-4 cursor-pointer ${selectedClass === "comfortPlus" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700"}`}
+                className={`border rounded-lg p-4 cursor-pointer ${
+                  selectedClass === "comfortPlus"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    : "border-gray-200 dark:border-gray-700"
+                }`}
                 onClick={() => setSelectedClass("comfortPlus")}
               >
                 <div className="flex justify-between items-center mb-2">
-                  <h3 className="font-medium text-gray-900 dark:text-white">Comfort+</h3>
+                  <h3 className="font-medium text-gray-900 dark:text-white">
+                    Comfort+
+                  </h3>
                   <span className="text-lg font-bold text-gray-900 dark:text-white">
                     ${flight.seatMap.comfortPlus.price}
                   </span>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Extra legroom and premium amenities</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                  Extra legroom and premium amenities
+                </p>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   {flight.seatMap.comfortPlus.available} seats available
                 </span>
               </div>
 
               <div
-                className={`border rounded-lg p-4 cursor-pointer ${selectedClass === "firstClass" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700"}`}
+                className={`border rounded-lg p-4 cursor-pointer ${
+                  selectedClass === "firstClass"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    : "border-gray-200 dark:border-gray-700"
+                }`}
                 onClick={() => setSelectedClass("firstClass")}
               >
                 <div className="flex justify-between items-center mb-2">
-                  <h3 className="font-medium text-gray-900 dark:text-white">First Class</h3>
+                  <h3 className="font-medium text-gray-900 dark:text-white">
+                    First Class
+                  </h3>
                   <span className="text-lg font-bold text-gray-900 dark:text-white">
                     ${flight.seatMap.firstClass.price}
                   </span>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Luxury seating with premium service</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                  Luxury seating with premium service
+                </p>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
                   {flight.seatMap.firstClass.available} seats available
                 </span>
@@ -321,22 +401,35 @@ const FlightDetailsPage: React.FC = () => {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Policies</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Policies
+            </h2>
             <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
               <div className="mb-3">
-                <span className="font-medium text-gray-900 dark:text-white">Cancellation:</span>
-                <p className="text-gray-600 dark:text-gray-300">{flight.policies.cancellation}</p>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  Cancellation:
+                </span>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {flight.policies.cancellation}
+                </p>
               </div>
               <div>
-                <span className="font-medium text-gray-900 dark:text-white">Changes:</span>
-                <p className="text-gray-600 dark:text-gray-300">{flight.policies.changes}</p>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  Changes:
+                </span>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {flight.policies.changes}
+                </p>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <label htmlFor="passengers" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="passengers"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Number of Passengers
               </label>
               <select
@@ -373,8 +466,7 @@ const FlightDetailsPage: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default FlightDetailsPage
-
+export default FlightDetailsPage;

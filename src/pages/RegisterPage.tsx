@@ -1,52 +1,54 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../contexts/AuthContext"
+import type React from "react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../contexts/AuthContext";
 
 const RegisterPage: React.FC = () => {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const { register } = useAuth()
-  const navigate = useNavigate()
+  const { t } = useTranslation();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
+    e.preventDefault();
+    setError("");
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setError("Passwords do not match")
-      return
+      setError(t("auth.passwordsNoMatch"));
+      return;
     }
 
     // Validate password strength
     if (password.length < 8) {
-      setError("Password must be at least 8 characters long")
-      return
+      setError(t("auth.passwordLength"));
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
-      const success = await register(name, email, password)
+      const success = await register(name, email, password);
       if (success) {
-        navigate("/")
+        navigate("/");
       } else {
-        setError("Registration failed. Please try again.")
+        setError(t("auth.registrationFailed"));
       }
     } catch (err: any) {
-      setError(err.message || "An error occurred during registration")
-      console.error(err)
+      setError(err.message || t("auth.registrationFailed"));
+      console.error(err);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -54,7 +56,7 @@ const RegisterPage: React.FC = () => {
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Create an account
+              {t("auth.createAccount")}
             </h1>
             {error && (
               <div
@@ -66,8 +68,11 @@ const RegisterPage: React.FC = () => {
             )}
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Your name
+                <label
+                  htmlFor="name"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  {t("auth.yourName")}
                 </label>
                 <input
                   type="text"
@@ -81,8 +86,11 @@ const RegisterPage: React.FC = () => {
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Your email
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  {t("auth.email")}
                 </label>
                 <input
                   type="email"
@@ -96,8 +104,11 @@ const RegisterPage: React.FC = () => {
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Password
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  {t("auth.password")}
                 </label>
                 <input
                   type="password"
@@ -115,7 +126,7 @@ const RegisterPage: React.FC = () => {
                   htmlFor="confirm-password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Confirm password
+                  {t("auth.confirmPassword")}
                 </label>
                 <input
                   type="password"
@@ -139,10 +150,16 @@ const RegisterPage: React.FC = () => {
                   />
                 </div>
                 <div className="ml-3 text-sm">
-                  <label htmlFor="terms" className="font-light text-gray-500 dark:text-gray-300">
-                    I accept the{" "}
-                    <a className="font-medium text-blue-600 hover:underline dark:text-blue-500" href="#">
-                      Terms and Conditions
+                  <label
+                    htmlFor="terms"
+                    className="font-light text-gray-500 dark:text-gray-300"
+                  >
+                    {t("auth.termsConditions")}{" "}
+                    <a
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                      href="#"
+                    >
+                      {t("footer.termsConditions")}
                     </a>
                   </label>
                 </div>
@@ -170,16 +187,19 @@ const RegisterPage: React.FC = () => {
                         fill="currentFill"
                       />
                     </svg>
-                    <span>Creating account...</span>
+                    <span>{t("auth.creatingAccount")}</span>
                   </div>
                 ) : (
-                  "Create an account"
+                  t("auth.createAccount")
                 )}
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Already have an account?{" "}
-                <Link to="/login" className="font-medium text-blue-600 hover:underline dark:text-blue-500">
-                  Login here
+                {t("auth.alreadyHaveAccount")}{" "}
+                <Link
+                  to="/login"
+                  className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                >
+                  {t("auth.loginHere")}
                 </Link>
               </p>
             </form>
@@ -187,8 +207,7 @@ const RegisterPage: React.FC = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default RegisterPage
-
+export default RegisterPage;

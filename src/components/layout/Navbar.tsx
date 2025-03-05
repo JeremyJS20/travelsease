@@ -1,35 +1,54 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../../contexts/AuthContext"
-import { useNotification } from "../../contexts/NotificationContext"
-import NotificationDropdown from "../notifications/NotificationDropdown"
+import type React from "react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { useNotification } from "../../contexts/NotificationContext";
+import NotificationDropdown from "../notifications/NotificationDropdown";
+import CartSummary from "../cart/CartSummary";
+import { useTranslation } from "react-i18next";
 
 const Navbar: React.FC = () => {
-  const { user, isAuthenticated, logout } = useAuth()
-  const { unreadCount } = useNotification()
-  const navigate = useNavigate()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false)
+  const { t, i18n } = useTranslation();
+  const { user, isAuthenticated, logout } = useAuth();
+  const { unreadCount } = useNotification();
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   const handleLogout = () => {
-    logout()
-    navigate("/")
-  }
+    logout();
+    navigate("/");
+  };
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">TravelEase</span>
+        <Link
+          to="/"
+          className="flex items-center space-x-3 rtl:space-x-reverse"
+        >
+          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+            TravelEase
+          </span>
         </Link>
 
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+          <div className="mr-4">
+            <button onClick={() => changeLanguage("en")} className="mr-2">
+              EN
+            </button>
+            <button onClick={() => changeLanguage("es")}>ES</button>
+          </div>
           {isAuthenticated ? (
             <>
+              <CartSummary />
               {/* Notifications */}
               <div className="relative">
                 <button
@@ -57,7 +76,11 @@ const Navbar: React.FC = () => {
                     </div>
                   )}
                 </button>
-                {isNotificationsOpen && <NotificationDropdown onClose={() => setIsNotificationsOpen(false)} />}
+                {isNotificationsOpen && (
+                  <NotificationDropdown
+                    onClose={() => setIsNotificationsOpen(false)}
+                  />
+                )}
               </div>
 
               {/* User menu */}
@@ -65,12 +88,19 @@ const Navbar: React.FC = () => {
                 <button
                   type="button"
                   className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  onClick={() =>
+                    setIsProfileDropdownOpen(!isProfileDropdownOpen)
+                  }
                 >
                   <span className="sr-only">Open user menu</span>
                   <img
                     className="w-8 h-8 rounded-full"
-                    src={user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "User")}`}
+                    src={
+                      user?.avatar ||
+                      `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        user?.name || "User"
+                      )}`
+                    }
                     alt="user photo"
                   />
                 </button>
@@ -88,7 +118,7 @@ const Navbar: React.FC = () => {
                           className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                           onClick={() => setIsProfileDropdownOpen(false)}
                         >
-                          Profile
+                          {t("navbar.profile")}
                         </Link>
                       </li>
                       <li>
@@ -97,19 +127,19 @@ const Navbar: React.FC = () => {
                           className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                           onClick={() => setIsProfileDropdownOpen(false)}
                         >
-                          My Itineraries
+                          {t("navbar.myItineraries")}
                         </Link>
                       </li>
                     </ul>
                     <div className="py-2">
                       <button
                         onClick={() => {
-                          handleLogout()
-                          setIsProfileDropdownOpen(false)
+                          handleLogout();
+                          setIsProfileDropdownOpen(false);
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                       >
-                        Sign out
+                        {t("navbar.signOut")}
                       </button>
                     </div>
                   </div>
@@ -122,13 +152,13 @@ const Navbar: React.FC = () => {
                 to="/login"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
               >
-                Login
+                {t("navbar.login")}
               </Link>
               <Link
                 to="/register"
                 className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               >
-                Register
+                {t("navbar.register")}
               </Link>
             </div>
           )}
@@ -158,7 +188,9 @@ const Navbar: React.FC = () => {
         </div>
 
         <div
-          className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${isMenuOpen ? "block" : "hidden"}`}
+          className={`items-center justify-between w-full md:flex md:w-auto md:order-1 ${
+            isMenuOpen ? "block" : "hidden"
+          }`}
         >
           <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <li>
@@ -167,7 +199,7 @@ const Navbar: React.FC = () => {
                 className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Home
+                {t("navbar.home")}
               </Link>
             </li>
             <li>
@@ -176,7 +208,7 @@ const Navbar: React.FC = () => {
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Flights
+                {t("navbar.flights")}
               </Link>
             </li>
             <li>
@@ -185,7 +217,7 @@ const Navbar: React.FC = () => {
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Hotels
+                {t("navbar.hotels")}
               </Link>
             </li>
             <li>
@@ -194,7 +226,7 @@ const Navbar: React.FC = () => {
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Activities
+                {t("navbar.activities")}
               </Link>
             </li>
             <li>
@@ -203,7 +235,7 @@ const Navbar: React.FC = () => {
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Support
+                {t("navbar.support")}
               </Link>
             </li>
             <li>
@@ -212,15 +244,14 @@ const Navbar: React.FC = () => {
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Loyalty Program
+                {t("navbar.loyaltyProgram")}
               </Link>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbar;
